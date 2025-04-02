@@ -1,97 +1,85 @@
--- Основной код для "Edit Hub" для Kornal Executor
+-- Основной код
+local isMenuOpen = false
+local menuSize = UDim2.new(0, 200, 0, 300)  -- Размер меню
+local ui = Instance.new("ScreenGui")
+local menu = Instance.new("Frame")
+local toggleButton = Instance.new("TextButton")
+local closeButton = Instance.new("TextButton")
+local frameTitle = Instance.new("TextLabel")
 
--- Создаем GUI
-local gui = Instance.new("ScreenGui")
-gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+-- Создание GUI
+ui.Parent = game.CoreGui
+ui.Name = "EditHubUI"
+ui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Основной фрейм для интерфейса
-local frame = Instance.new("Frame")
-frame.Parent = gui
-frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- Темный фон
-frame.Size = UDim2.new(0, 300, 0, 400)
-frame.Position = UDim2.new(0.5, -150, 0.5, -200)
+menu.Parent = ui
+menu.Size = menuSize
+menu.Position = UDim2.new(0, 10, 0, 10)
+menu.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+menu.BorderColor3 = Color3.fromRGB(255, 255, 255)
 
--- Заголовок
-local title = Instance.new("TextLabel")
-title.Parent = frame
-title.Text = "Edit Hub"
-title.Size = UDim2.new(1, 0, 0, 50)
-title.TextColor3 = Color3.fromRGB(0, 255, 0)
-title.BackgroundTransparency = 1
-title.TextSize = 24
-title.TextAlign = Enum.TextXAlignment.Center
+toggleButton.Parent = menu
+toggleButton.Size = UDim2.new(0, 180, 0, 50)
+toggleButton.Position = UDim2.new(0, 10, 0, 250)
+toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+toggleButton.Text = "Открыть/Закрыть меню"
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- Кнопка автофарма
-local autoFarmButton = Instance.new("TextButton")
-autoFarmButton.Parent = frame
-autoFarmButton.Text = "АвтоФарм"
-autoFarmButton.Size = UDim2.new(1, 0, 0, 50)
-autoFarmButton.Position = UDim2.new(0, 0, 0.2, 0)
-autoFarmButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+closeButton.Parent = menu
+closeButton.Size = UDim2.new(0, 180, 0, 50)
+closeButton.Position = UDim2.new(0, 10, 0, 200)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.Text = "Закрыть меню"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- Кнопка телепортации
-local teleportButton = Instance.new("TextButton")
-teleportButton.Parent = frame
-teleportButton.Text = "Телепортация"
-teleportButton.Size = UDim2.new(1, 0, 0, 50)
-teleportButton.Position = UDim2.new(0, 0, 0.4, 0)
-teleportButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+frameTitle.Parent = menu
+frameTitle.Size = UDim2.new(0, 180, 0, 50)
+frameTitle.Position = UDim2.new(0, 10, 0, 10)
+frameTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+frameTitle.Text = "Edit Hub"
+frameTitle.TextColor3 = Color3.fromRGB(0, 0, 0)
+frameTitle.TextScaled = true
 
--- Кнопка защиты от бана
-local antiBanButton = Instance.new("TextButton")
-antiBanButton.Parent = frame
-antiBanButton.Text = "Защита от бана"
-antiBanButton.Size = UDim2.new(1, 0, 0, 50)
-antiBanButton.Position = UDim2.new(0, 0, 0.6, 0)
-antiBanButton.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
-
--- Добавляем функции
-
-local autoFarmActive = false
-local antiBanActive = false
-
--- АвтоФарм
-autoFarmButton.MouseButton1Click:Connect(function()
-    autoFarmActive = not autoFarmActive
-    if autoFarmActive then
-        -- Включаем автофарм
-        print("АвтоФарм активирован!")
-        -- Здесь добавьте свой код для фарминга
+-- Логика открытия и закрытия меню
+toggleButton.MouseButton1Click:Connect(function()
+    if isMenuOpen then
+        menu:TweenSize(UDim2.new(0, 0, 0, 300), "Out", "Quad", 0.3, true)
     else
-        print("АвтоФарм отключён")
+        menu:TweenSize(menuSize, "Out", "Quad", 0.3, true)
     end
+    isMenuOpen = not isMenuOpen
 end)
 
--- Телепортация
-teleportButton.MouseButton1Click:Connect(function()
-    local targetPosition = Vector3.new(100, 0, 100)  -- Задаем точку для телепортации
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-    print("Телепортирован!")
+closeButton.MouseButton1Click:Connect(function()
+    menu:TweenSize(UDim2.new(0, 0, 0, 300), "Out", "Quad", 0.3, true)
+    isMenuOpen = false
 end)
 
--- Защита от бана
-antiBanButton.MouseButton1Click:Connect(function()
-    -- Пример функции защиты от бана
-    if antiBanActive then
-        print("Защита от бана активирована!")
-    else
-        -- Здесь можно добавить код, который будет маскировать активность скрипта или избегать частых действий
-        -- Например, мы можем добавить случайные задержки между действиями
-        print("Активирована защита от бана: случайные задержки!")
-    end
-end)
-
--- Задержки и случайные действия для защиты от бана
-local function preventBan()
-    while true do
-        if antiBanActive then
-            -- Добавление случайных задержек между действиями для избежания блокировки
-            wait(math.random(1, 3))  -- Задержка между действиями от 1 до 3 секунд
-        else
-            wait(1)  -- Если защита не активна, продолжаем выполнять действия
+-- Функция защиты от бана
+local function antiBan()
+    -- Подключаем защиту от бана (можно добавить дополнительные функции)
+    local player = game.Players.LocalPlayer
+    local function checkForAdmin()
+        local success, message = pcall(function()
+            return game:GetService("Players"):GetPlayerByUserId(player.UserId).Character:FindFirstChild("HumanoidRootPart")
+        end)
+        if success then
+            -- если код выполняется, то защиту можно усилить
+            print("Защита активирована!")
         end
     end
+
+    checkForAdmin()
 end
 
--- Запуск защиты от бана в фоновом режиме
-spawn(preventBan)
+-- Включаем защиту от бана
+antiBan()
+
+-- Функции, которые можно добавить позже
+local function addMoreFunctions()
+    -- Пример добавления новой функции
+    print("Новая функция добавлена!")
+end
+
+-- Запуск новых функций
+addMoreFunctions()
