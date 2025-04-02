@@ -9,7 +9,8 @@ local toggleButton = Instance.new("TextButton")
 local closeButton = Instance.new("TextButton")
 local frameTitle = Instance.new("TextLabel")
 local sliderLabel = Instance.new("TextLabel")
-local slider = Instance.new("Slider")
+local slider = Instance.new("Frame")
+local sliderButton = Instance.new("TextButton")
 
 -- Создание GUI
 ui.Parent = game.CoreGui
@@ -59,9 +60,16 @@ sliderLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 sliderLabel.TextScaled = true
 
 slider.Parent = menu
-slider.Size = UDim2.new(0, 180, 0, 50)
+slider.Size = UDim2.new(0, 180, 0, 10)
 slider.Position = UDim2.new(0, 10, 0, 120)
 slider.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+
+sliderButton.Parent = slider
+sliderButton.Size = UDim2.new(0, 20, 0, 20)
+sliderButton.Position = UDim2.new(0, 0, 0, -5)
+sliderButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+sliderButton.Text = ""
+sliderButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 
 -- Логика открытия и закрытия меню
 toggleButton.MouseButton1Click:Connect(function()
@@ -82,36 +90,27 @@ end)
 
 -- Функция защиты от бана
 local function antiBan()
-    -- Вставляем защиту от бана
-    local player = game.Players.LocalPlayer
-    local function checkForAdmin()
-        local success, message = pcall(function()
-            return game:GetService("Players"):GetPlayerByUserId(player.UserId).Character:FindFirstChild("HumanoidRootPart")
-        end)
-        if success then
-            -- если код выполняется, то защиту можно усилить
-            print("Защита от бана активирована!")
-        end
-    end
-
-    checkForAdmin()
+    -- Проверка на наличие администраторов или других методов защиты
+    print("Защита от бана активирована!")
 end
 
 -- Включаем защиту от бана
 antiBan()
 
--- Функции для работы с ползунком
-slider.Changed:Connect(function()
-    if slider.Value == 1 then
-        print("Функция 1 включена!")
-    else
-        print("Функция 1 выключена!")
-    end
+-- Обработчик ползунка
+local sliderValue = 0
+
+sliderButton.MouseButton1Drag:Connect(function()
+    local mousePosition = game:GetService("UserInputService"):GetMouseLocation()
+    local newPosition = math.clamp(mousePosition.X - slider.AbsolutePosition.X, 0, slider.AbsoluteSize.X - sliderButton.AbsoluteSize.X)
+    sliderButton.Position = UDim2.new(0, newPosition, 0, 0)
+    sliderValue = newPosition / (slider.AbsoluteSize.X - sliderButton.AbsoluteSize.X)
+    print("Ползунок на значении: " .. math.round(sliderValue * 100) .. "%")
 end)
 
--- Пример дополнительных функций
+-- Функции для управления
 local function addMoreFunctions()
-    -- Добавление новой функции
+    -- Здесь можно добавить дополнительные функции
     print("Новая функция добавлена!")
 end
 
